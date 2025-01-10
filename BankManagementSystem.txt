@@ -1,0 +1,147 @@
+import java.util.*;
+
+class Bank {
+    private String name;
+    private String accountNo;
+    private double balance;
+
+    public Bank(String name, String accountNo, double balance) {
+        this.name = name;
+        this.accountNo = accountNo;
+        this.balance = balance;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAccountNo() {
+        return accountNo;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            System.out.println("Amount deposited successfully.");
+        } else {
+            System.out.println("Invalid deposit amount. Please enter a positive value.");
+        }
+    }
+
+    public void withdraw(double amount) {
+        if (amount > 0 && amount <= balance) {
+            balance -= amount;
+            System.out.println("Amount withdrawn successfully.");
+        } else {
+            System.out.println("Insufficient balance or invalid withdrawal amount.");
+        }
+    }
+
+    public void displayAccountInfo() {
+        System.out.println("\n=== Account Information ===");
+        System.out.println("Account Holder: " + name);
+        System.out.println("Account Number: " + accountNo);
+        System.out.println("Current Balance: " + balance);
+    }
+}
+
+ class BankManagementSystem {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Map<String, Bank> accounts = new HashMap<>();
+
+        while (true) {
+            try {
+                System.out.println("\n========= Bank Management System =========");
+                System.out.println("1. Create Account");
+                System.out.println("2. Deposit");
+                System.out.println("3. Withdraw");
+                System.out.println("4. Display Account Info");
+                System.out.println("5. Exit");
+                System.out.print("Enter your choice: ");
+                int choice = scanner.nextInt();
+
+                switch (choice) {
+                    case 1:
+                        System.out.print("Enter Account Holder Name: ");
+                        scanner.nextLine(); // consume leftover newline
+                        String name = scanner.nextLine();
+                        System.out.print("Enter Account Number: ");
+                        String accountNo = scanner.next();
+
+                        if (accounts.containsKey(accountNo)) {
+                            System.out.println("Account number already exists. Try again.");
+                            break;
+                        }
+
+                        System.out.print("Enter Initial Balance: ");
+                        double balance = scanner.nextDouble();
+                        if (balance < 0) {
+                            System.out.println("Initial balance cannot be negative. Try again.");
+                            break;
+                        }
+
+                        accounts.put(accountNo, new Bank(name, accountNo, balance));
+                        System.out.println("Account created successfully.");
+                        break;
+
+                    case 2:
+                        System.out.print("Enter Account Number: ");
+                        String accNo = scanner.next();
+                        Bank account = accounts.get(accNo);
+                        if (account != null) {
+                            System.out.print("Enter Deposit Amount: ");
+                            double depositAmount = scanner.nextDouble();
+                            account.deposit(depositAmount);
+                        } else {
+                            System.out.println("Account not found.");
+                        }
+                        break;
+
+                    case 3:
+                        System.out.print("Enter Account Number: ");
+                        accNo = scanner.next();
+                        account = accounts.get(accNo);
+                        if (account != null) {
+                            System.out.print("Enter Withdrawal Amount: ");
+                            double withdrawAmount = scanner.nextDouble();
+                            account.withdraw(withdrawAmount);
+                        } else {
+                            System.out.println("Account not found.");
+                        }
+                        break;
+
+                    case 4:
+                        System.out.print("Enter Account Number: ");
+                        accNo = scanner.next();
+                        account = accounts.get(accNo);
+                        if (account != null) {
+                            account.displayAccountInfo();
+                        } else {
+                            System.out.println("Account not found.");
+                        }
+                        break;
+
+                    case 5:
+                        System.out.print("Are you sure you want to exit? (yes/no): ");
+                        scanner.nextLine(); 
+                        String confirm = scanner.nextLine();
+                        if (confirm.equalsIgnoreCase("yes")) {
+                            System.out.println("Exiting... Goodbye!");
+                            System.exit(0);
+                        }
+                        break;
+
+                    default:
+                        System.out.println("Invalid choice. Please select a valid option.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.next(); 
+            }
+        }
+    }
